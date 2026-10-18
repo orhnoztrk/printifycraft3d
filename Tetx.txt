@@ -1,0 +1,1000 @@
+```html
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PrintifyCraft3D | Özel Tasarım 3D Noel & Ev Süsleri</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Font Awesome for Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts (Plus Jakarta Sans) -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        pineGreen: '#1A382B',
+                        pineLight: '#2A5240',
+                        festiveRed: '#C83E3D',
+                        festiveRedHover: '#A82E2D',
+                        goldAccent: '#D4AF37',
+                        goldHover: '#B59328',
+                        warmBg: '#F8F6F0',
+                        warmCard: '#FFFFFF',
+                        charcoal: '#222222',
+                        sageGreen: '#859F8D'
+                    },
+                    fontFamily: {
+                        sans: ['Plus Jakarta Sans', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        body {
+            background-color: #F8F6F0;
+            color: #222222;
+            font-family: 'Plus Jakarta Sans', sans-serif;
+        }
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 6px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: #F8F6F0;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: #2A5240;
+            border-radius: 10px;
+        }
+        .toast-enter {
+            transform: translateY(100%);
+            opacity: 0;
+        }
+        .toast-enter-active {
+            transform: translateY(0);
+            opacity: 1;
+            transition: all 0.3s ease;
+        }
+        .no-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+        .no-scrollbar {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col justify-between antialiased selection:bg-goldAccent selection:text-white">
+
+    <!-- Üst Bilgilendirme Bandı -->
+    <div class="bg-pineGreen text-goldAccent text-xs py-2.5 px-4 text-center font-medium tracking-wide flex justify-center items-center gap-2 border-b border-goldAccent/20">
+        <span>🎄 <strong>250 TL ve Üzeri</strong> 3D Süs Siparişlerinde Kargo Ücretsiz!</span>
+        <span class="hidden md:inline text-white/40">|</span>
+        <span class="hidden md:inline text-white/90">🎁 Çevre Dostu Biypolimer PLA Baskı</span>
+    </div>
+
+    <!-- Header / Navigasyon -->
+    <header class="sticky top-0 z-40 bg-warmBg/90 backdrop-blur-md border-b border-pineGreen/10 shadow-sm transition-all duration-300">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-20">
+                
+                <!-- Logo -->
+                <div class="flex items-center space-x-3 cursor-pointer" onclick="resetFilters()">
+                    <div class="w-11 h-11 rounded-2xl bg-pineGreen flex items-center justify-center text-goldAccent text-xl shadow-md border border-goldAccent/30 transform hover:rotate-6 transition-transform">
+                        <i class="fa-solid fa-cube"></i>
+                    </div>
+                    <div>
+                        <span class="text-2xl font-extrabold tracking-tight text-pineGreen block leading-none">Printify<span class="text-festiveRed">Craft3D</span></span>
+                        <span class="text-[10px] text-pineLight font-bold tracking-wider uppercase block mt-1">Özel Tasarım 3D Noel & Ev Süsleri</span>
+                    </div>
+                </div>
+
+                <!-- Arama Çubuğu (Masaüstü) -->
+                <div class="hidden md:flex flex-1 max-w-md mx-8">
+                    <div class="relative w-full">
+                        <input type="text" id="searchInput" oninput="handleSearch()" placeholder="3D Kapı köşe süsü, vazo, Noel ağacı ara..." 
+                            class="w-full pl-11 pr-4 py-2.5 bg-white rounded-full border border-pineGreen/15 text-sm focus:outline-none focus:border-pineGreen focus:ring-2 focus:ring-pineGreen/20 transition-all shadow-inner">
+                        <i class="fa-solid fa-magnifying-glass absolute left-4 top-3.5 text-pineGreen/40 text-sm"></i>
+                    </div>
+                </div>
+
+                <!-- Eylem Butonları (Özel Talep, Favoriler, Sepet) -->
+                <div class="flex items-center space-x-2 sm:space-x-4">
+                    <!-- Özel 3D Sipariş / Talep Butonu -->
+                    <button onclick="openCustomOrderModal()" class="hidden sm:flex items-center space-x-2 bg-pineGreen hover:bg-pineLight text-white text-xs sm:text-sm font-semibold px-4 py-2.5 rounded-full transition-all shadow-md hover:shadow-lg transform active:scale-95 border border-goldAccent/30">
+                        <i class="fa-solid fa-wand-magic-sparkles text-goldAccent text-sm"></i>
+                        <span>Özel 3D Baskı İste</span>
+                    </button>
+
+                    <!-- Favoriler -->
+                    <button onclick="filterFavorites()" class="relative p-2.5 text-pineGreen hover:text-festiveRed transition-colors rounded-full hover:bg-pineGreen/5" title="Favorilerim">
+                        <i class="fa-regular fa-heart text-xl"></i>
+                        <span id="favCount" class="hidden absolute top-1 right-1 bg-festiveRed text-white text-[10px] font-bold w-4 h-4 rounded-full flex items-center justify-center">0</span>
+                    </button>
+
+                    <!-- Sepet -->
+                    <button onclick="toggleCartModal(true)" class="relative flex items-center space-x-2 bg-festiveRed hover:bg-festiveRedHover text-white px-4 py-2.5 rounded-full transition-all shadow-md hover:shadow-lg transform active:scale-95">
+                        <i class="fa-solid fa-bag-shopping text-base"></i>
+                        <span id="cartCount" class="bg-goldAccent text-pineGreen text-xs font-bold px-2 py-0.5 rounded-full min-w-[20px] text-center">0</span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Mobil Arama Çubuğu -->
+            <div class="pb-3 md:hidden">
+                <div class="relative w-full">
+                    <input type="text" id="searchInputMobile" oninput="handleSearchMobile()" placeholder="3D kapı süsü veya ev dekoru ara..." 
+                        class="w-full pl-10 pr-4 py-2 bg-white rounded-full border border-pineGreen/15 text-sm focus:outline-none focus:border-pineGreen">
+                    <i class="fa-solid fa-magnifying-glass absolute left-3.5 top-3 text-pineGreen/40 text-sm"></i>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <main class="flex-grow">
+        <!-- Hero Bölümü -->
+        <section class="relative bg-gradient-to-r from-pineGreen via-pineLight to-pineGreen text-white overflow-hidden py-12 md:py-20 border-b border-goldAccent/20">
+            <div class="absolute inset-0 opacity-10 bg-[radial-gradient(#D4AF37_1px,transparent_1px)] [background-size:16px_16px]"></div>
+            
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+                <div class="grid md:grid-cols-2 gap-10 items-center">
+                    <div class="space-y-6 text-center md:text-left">
+                        <span class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-goldAccent/20 border border-goldAccent/40 text-goldAccent text-xs sm:text-sm font-semibold tracking-wide">
+                            <i class="fa-solid fa-sparkles text-xs"></i> 3D Baskı Teknolojisi & İnce İşçilik
+                        </span>
+                        <h1 class="text-3xl sm:text-4xl md:text-5xl font-extrabold text-white leading-tight">
+                            Kapı Köşelerinize ve Evinize <span class="text-goldAccent italic">3 Boyutlu</span> Büyü Katın
+                        </h1>
+                        <p class="text-white/80 text-sm sm:text-base leading-relaxed max-w-lg mx-auto md:mx-0">
+                            Kapı çerçevelerinin köşelerine mükemmel oturan Noel temalı özel aksesuarlar ve modern geometrik ev dekorasyon süsleri PrintifyCraft3D kalitesiyle kapınızda.
+                        </p>
+                        <div class="flex flex-col sm:flex-row items-center justify-center md:justify-start gap-4 pt-2">
+                            <a href="#productsSection" class="w-full sm:w-auto px-8 py-3.5 bg-festiveRed hover:bg-festiveRedHover text-white font-bold rounded-full shadow-lg transition-all text-center transform hover:-translate-y-0.5">
+                                Koleksiyonu Keşfet
+                            </a>
+                            <button onclick="openCustomOrderModal()" class="w-full sm:w-auto px-7 py-3.5 bg-white/10 hover:bg-white/20 text-white border border-white/30 font-semibold rounded-full shadow-sm transition-all text-center backdrop-blur-sm">
+                                Custom 3D Baskı Talebi
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Hero Görsel Öne Çıkarımı -->
+                    <div class="relative flex justify-center">
+                        <div class="relative w-full max-w-md aspect-square rounded-3xl overflow-hidden shadow-2xl border-4 border-goldAccent/30 group">
+                            <img src="https://images.unsplash.com/photo-1543589077-47d51606c1bf?auto=format&fit=crop&w=800&q=80" 
+                                 alt="3D Noel Kapı Köşe Süsü ve Ev Dekoru" 
+                                 class="w-full h-full object-cover transform group-hover:scale-105 transition-transform duration-700">
+                            <div class="absolute inset-0 bg-gradient-to-t from-pineGreen/80 via-transparent to-transparent"></div>
+                            <div class="absolute bottom-4 left-4 right-4 bg-white/95 backdrop-blur-md p-4 rounded-2xl shadow-xl border border-goldAccent/30 flex items-center space-x-3 text-pineGreen">
+                                <div class="w-10 h-10 rounded-xl bg-pineGreen flex items-center justify-center text-goldAccent flex-shrink-0">
+                                    <i class="fa-solid fa-door-open text-lg"></i>
+                                </div>
+                                <div>
+                                    <h4 class="text-xs font-bold">Aletsiz Kolay Montaj</h4>
+                                    <p class="text-[11px] text-gray-600">Özel açılı L-geometrisi ile kapı çerçevesi köşelerine doğrudan oturur.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Ana Ürün Kataloğu ve Filtreler -->
+        <section id="productsSection" class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+            
+            <!-- Başlık ve Filtre Menüsü -->
+            <div class="flex flex-col md:flex-row md:items-center justify-between gap-6 mb-8">
+                <div>
+                    <h2 class="text-2xl sm:text-3xl font-extrabold text-pineGreen">3D Tasarım Koleksiyonu</h2>
+                    <p class="text-xs sm:text-sm text-gray-600 mt-1">Kapı köşeleri ve yaşam alanlarınız için özel hassas 3D üretimler</p>
+                </div>
+
+                <!-- Kategori Butonları -->
+                <div class="flex items-center gap-2 overflow-x-auto pb-2 custom-scrollbar no-scrollbar">
+                    <button onclick="filterCategory('all')" class="cat-btn active px-4 py-2 rounded-full text-xs sm:text-sm font-semibold whitespace-nowrap transition-all border border-pineGreen bg-pineGreen text-white shadow-sm">
+                        Tümü
+                    </button>
+                    <button onclick="filterCategory('3D Noel Kapı Köşe Süsleri')" class="cat-btn px-4 py-2 rounded-full text-xs sm:text-sm font-semibold whitespace-nowrap transition-all border border-pineGreen/20 bg-white text-pineGreen hover:bg-pineGreen/5">
+                        🎄 3D Noel Kapı Köşe Süsleri
+                    </button>
+                    <button onclick="filterCategory('Ev Dekorasyon Süsleri')" class="cat-btn px-4 py-2 rounded-full text-xs sm:text-sm font-semibold whitespace-nowrap transition-all border border-pineGreen/20 bg-white text-pineGreen hover:bg-pineGreen/5">
+                        🏺 Ev Dekorasyon Süsleri
+                    </button>
+                    <button onclick="filterCategory('Yeni Gelenler')" class="cat-btn px-4 py-2 rounded-full text-xs sm:text-sm font-semibold whitespace-nowrap transition-all border border-pineGreen/20 bg-white text-pineGreen hover:bg-pineGreen/5">
+                        ✨ Yeni Gelenler & Popüler
+                    </button>
+                </div>
+            </div>
+
+            <!-- Ürün Izgarası (Grid) -->
+            <div id="productGrid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-3 gap-8">
+                <!-- Ürünler JavaScript ile dinamik basılacak -->
+            </div>
+
+            <!-- Boş Sonuç Mesajı -->
+            <div id="noResults" class="hidden text-center py-16 bg-white rounded-3xl border border-dashed border-pineGreen/20 my-6">
+                <i class="fa-solid fa-cube text-5xl text-goldAccent/60 mb-3"></i>
+                <h3 class="text-lg font-bold text-pineGreen">Aramanıza Uygun 3D Ürün Bulunamadı</h3>
+                <p class="text-sm text-gray-500 mt-1">Farklı bir kategori seçebilir veya özel tasarım isteğinde bulunabilirsiniz.</p>
+                <button onclick="resetFilters()" class="mt-4 px-5 py-2 bg-pineGreen text-white text-xs font-semibold rounded-full hover:bg-pineLight">
+                    Tüm Ürünleri Göster
+                </button>
+            </div>
+        </section>
+
+        <!-- 3D Baskı Avantajları & Kapı Köşe Montaj Bilgisi -->
+        <section class="bg-gradient-to-b from-white to-warmBg py-16 border-t border-b border-pineGreen/10">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="text-center max-w-2xl mx-auto mb-12">
+                    <span class="text-festiveRed text-xs font-extrabold uppercase tracking-wider">Neden PrintifyCraft3D?</span>
+                    <h2 class="text-2xl sm:text-3xl font-extrabold text-pineGreen mt-1">Özel 3D Baskı Teknolojimiz & Kalite</h2>
+                    <p class="text-sm text-gray-600 mt-2">Çevre dostu hammaddeler ve hassas üretim standartları</p>
+                </div>
+
+                <div class="grid md:grid-cols-3 gap-8">
+                    <!-- Özellik 1 -->
+                    <div class="bg-white p-8 rounded-3xl shadow-sm border border-pineGreen/10 flex flex-col items-center text-center">
+                        <div class="w-14 h-14 rounded-2xl bg-pineGreen/10 text-pineGreen flex items-center justify-center text-2xl mb-4">
+                            <i class="fa-solid fa-leaf text-pineGreen"></i>
+                        </div>
+                        <h3 class="text-base font-bold text-pineGreen mb-2">Çevre Dostu Biyo-PLA</h3>
+                        <p class="text-xs text-gray-600 leading-relaxed">
+                            Ürünlerimizin tamamı mısır nişastası ve şeker kamışından elde edilen %100 geri dönüştürülebilir ve toksik madde içermeyen PLA ile üretilir.
+                        </p>
+                    </div>
+
+                    <!-- Özellik 2 -->
+                    <div class="bg-white p-8 rounded-3xl shadow-sm border border-pineGreen/10 flex flex-col items-center text-center">
+                        <div class="w-14 h-14 rounded-2xl bg-goldAccent/20 text-goldAccent flex items-center justify-center text-2xl mb-4">
+                            <i class="fa-solid fa-door-closed text-goldAccent"></i>
+                        </div>
+                        <h3 class="text-base font-bold text-pineGreen mb-2">Kapı Çerçevelerine Mükemmel Uyum</h3>
+                        <p class="text-xs text-gray-600 leading-relaxed">
+                            Noel kapı köşe süslerimiz 90 derecelik özel L-kesimi sayesinde kapı kasasının üzerine çivi veya vida kullanmadan kolayca oturtulur.
+                        </p>
+                    </div>
+
+                    <!-- Özellik 3 -->
+                    <div class="bg-white p-8 rounded-3xl shadow-sm border border-pineGreen/10 flex flex-col items-center text-center">
+                        <div class="w-14 h-14 rounded-2xl bg-festiveRed/10 text-festiveRed flex items-center justify-center text-2xl mb-4">
+                            <i class="fa-solid fa-palette text-festiveRed"></i>
+                        </div>
+                        <h3 class="text-base font-bold text-pineGreen mb-2">Çeşitli Renk Seçenekleri</h3>
+                        <p class="text-xs text-gray-600 leading-relaxed">
+                            Noel Kırmızısı, Orman Yeşili, Mat Beyaz, Antrasit ve Işıltılı Altın Sarısı gibi zengin renk yelpazemizle ev dekorunuza uyum sağlar.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- SSS (Sıkça Sorulan Sorular) -->
+        <section class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
+            <h2 class="text-2xl font-extrabold text-pineGreen text-center mb-8">Sıkça Sorulan Sorular</h2>
+            
+            <div class="space-y-4">
+                <div class="bg-white rounded-2xl p-5 border border-pineGreen/10 shadow-xs">
+                    <h3 class="text-sm font-bold text-pineGreen flex items-center gap-2">
+                        <i class="fa-solid fa-circle-question text-goldAccent"></i> Kapı köşe süsleri kapıya zarar verir mi?
+                    </h3>
+                    <p class="text-xs text-gray-600 mt-2 pl-6">
+                        Kesinlikle hayır. Ürünlerimiz çivi veya vida gerektirmez. Doğrudan kapı çerçevesine oturan dengeli L-geometrisine sahiptir. İsteğe bağlı yanına gönderdiğimiz iz bırakmayan izsiz çift taraflı şeritlerle sabitlenebilir.
+                    </p>
+                </div>
+
+                <div class="bg-white rounded-2xl p-5 border border-pineGreen/10 shadow-xs">
+                    <h3 class="text-sm font-bold text-pineGreen flex items-center gap-2">
+                        <i class="fa-solid fa-circle-question text-goldAccent"></i> Özel boyut veya renk siparişi verebilir miyim?
+                    </h3>
+                    <p class="text-xs text-gray-600 mt-2 pl-6">
+                        Evet! Üst menüde yer alan "Özel 3D Baskı İste" butonunu kullanarak kendi özel ölçülerinizi, renklerinizi veya 3D tasarım dosyalarınızı bize iletebilirsiniz.
+                    </p>
+                </div>
+
+                <div class="bg-white rounded-2xl p-5 border border-pineGreen/10 shadow-xs">
+                    <h3 class="text-sm font-bold text-pineGreen flex items-center gap-2">
+                        <i class="fa-solid fa-circle-question text-goldAccent"></i> Kargo ve üretim süresi ne kadardır?
+                    </h3>
+                    <p class="text-xs text-gray-600 mt-2 pl-6">
+                        Siparişiniz alındıktan sonra 3D yazıcılarımızda 24 saat içerisinde özel üretilip paketlenir. 1-3 iş günü içerisinde kargoya verilir.
+                    </p>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-pineGreen text-white pt-12 pb-8 border-t border-goldAccent/20">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-8 mb-8">
+                <!-- Şirket Bilgisi -->
+                <div class="space-y-3">
+                    <div class="flex items-center space-x-2">
+                        <div class="w-8 h-8 rounded-xl bg-goldAccent text-pineGreen flex items-center justify-center font-bold">
+                            <i class="fa-solid fa-cube"></i>
+                        </div>
+                        <span class="text-xl font-extrabold text-white">PrintifyCraft3D</span>
+                    </div>
+                    <p class="text-xs text-white/70 leading-relaxed">
+                        3D baskı teknolojisi ile kapı köşelerinize Noel ruhunu ve evlerinize modern estetiği taşıyoruz.
+                    </p>
+                </div>
+
+                <!-- Hızlı Bağlantılar -->
+                <div>
+                    <h4 class="text-xs font-bold text-goldAccent mb-3 uppercase tracking-wider">Kategoriler</h4>
+                    <ul class="space-y-2 text-xs text-white/80">
+                        <li><a href="#productsSection" onclick="filterCategory('3D Noel Kapı Köşe Süsleri')" class="hover:text-goldAccent transition-colors">3D Noel Kapı Köşe Süsleri</a></li>
+                        <li><a href="#productsSection" onclick="filterCategory('Ev Dekorasyon Süsleri')" class="hover:text-goldAccent transition-colors">Ev Dekorasyon Süsleri</a></li>
+                        <li><a href="javascript:void(0)" onclick="openCustomOrderModal()" class="hover:text-goldAccent transition-colors">Özel 3D Baskı Talebi</a></li>
+                    </ul>
+                </div>
+
+                <!-- Müşteri Güvencesi -->
+                <div>
+                    <h4 class="text-xs font-bold text-goldAccent mb-3 uppercase tracking-wider">Hizmetlerimiz</h4>
+                    <ul class="space-y-2 text-xs text-white/80">
+                        <li><i class="fa-solid fa-truck-fast text-goldAccent mr-1"></i> 250 TL Üzeri Ücretsiz Kargo</li>
+                        <li><i class="fa-solid fa-rotate-left text-goldAccent mr-1"></i> 14 Gün Kolay İade</li>
+                        <li><i class="fa-solid fa-shield-halved text-goldAccent mr-1"></i> Güvenli Ödeme Altyapısı</li>
+                    </ul>
+                </div>
+
+                <!-- İletişim & Sosyal -->
+                <div>
+                    <h4 class="text-xs font-bold text-goldAccent mb-3 uppercase tracking-wider">Bize Ulaşın</h4>
+                    <div class="flex space-x-3 mb-3">
+                        <a href="#" class="w-8 h-8 rounded-full bg-white/10 flex items-center justify-center hover:bg-goldAccent hover:text-pineGreen transition-colors"><i class="fa-brands fa-instagram text-sm"></i></a>
+                        <a href="#" class="w-8 h-8 rounded-full bg-white/10 flex items-center justify-center hover:bg-goldAccent hover:text-pineGreen transition-colors"><i class="fa-brands fa-pinterest text-sm"></i></a>
+                        <a href="#" class="w-8 h-8 rounded-full bg-white/10 flex items-center justify-center hover:bg-goldAccent hover:text-pineGreen transition-colors"><i class="fa-brands fa-tiktok text-sm"></i></a>
+                    </div>
+                    <span class="text-xs text-white/60 block">E-posta: info@printifycraft3d.com</span>
+                </div>
+            </div>
+
+            <div class="border-t border-white/10 pt-6 text-center text-xs text-white/50">
+                © 2026 PrintifyCraft3D. Tüm hakları saklıdır. 3D tasarım & baskı teknolojileri ile üretilmiştir.
+            </div>
+        </div>
+    </footer>
+
+    <!-- SEPET MODALI (Slide-Over Cart) -->
+    <div id="cartModal" class="fixed inset-0 z-50 invisible transition-all duration-300">
+        <!-- Arka Plan Karartma -->
+        <div id="cartBackdrop" onclick="toggleCartModal(false)" class="absolute inset-0 bg-black/50 opacity-0 transition-opacity duration-300"></div>
+
+        <!-- Yan Panel İçeriği -->
+        <div id="cartDrawer" class="absolute top-0 right-0 h-full w-full max-w-md bg-warmBg shadow-2xl transform translate-x-full transition-transform duration-300 flex flex-col">
+            <!-- Modal Başlık -->
+            <div class="p-5 bg-white border-b border-pineGreen/10 flex items-center justify-between">
+                <div class="flex items-center space-x-2">
+                    <i class="fa-solid fa-bag-shopping text-festiveRed text-xl"></i>
+                    <h3 class="text-lg font-bold text-pineGreen">Alışveriş Sepetim</h3>
+                </div>
+                <button onclick="toggleCartModal(false)" class="text-gray-400 hover:text-pineGreen p-2 rounded-full transition-colors">
+                    <i class="fa-solid fa-xmark text-xl"></i>
+                </button>
+            </div>
+
+            <!-- Kargo Bedava İlerleme Barı -->
+            <div class="bg-pineGreen/5 p-3.5 px-5 border-b border-pineGreen/10">
+                <div class="flex justify-between text-xs font-semibold text-pineGreen mb-1.5" id="shippingProgressText">
+                    <span>Kargo Ücretsiz Barı</span>
+                    <span id="shippingDiffText">250.00 TL kaldı</span>
+                </div>
+                <div class="w-full h-2 bg-gray-200 rounded-full overflow-hidden">
+                    <div id="shippingProgressBar" class="h-full bg-goldAccent transition-all duration-500" style="width: 0%"></div>
+                </div>
+            </div>
+
+            <!-- Sepet Ürün Listesi -->
+            <div id="cartItemsList" class="flex-1 overflow-y-auto p-5 space-y-4 custom-scrollbar">
+                <!-- Sepet ürünleri JS ile doldurulacak -->
+            </div>
+
+            <!-- Sepet Alt Bilgileri & Ödeme -->
+            <div class="p-5 bg-white border-t border-pineGreen/10 space-y-3">
+                <div class="space-y-1.5 text-xs sm:text-sm">
+                    <div class="flex justify-between text-gray-600">
+                        <span>Ara Toplam</span>
+                        <span id="cartSubtotal" class="font-medium">0.00 TL</span>
+                    </div>
+                    <div class="flex justify-between text-gray-600">
+                        <span>Kargo Ücreti</span>
+                        <span id="cartShipping" class="font-medium">0.00 TL</span>
+                    </div>
+                    <div class="flex justify-between text-base font-extrabold text-pineGreen pt-2 border-t border-gray-100">
+                        <span>Toplam Tutar</span>
+                        <span id="cartTotal" class="text-festiveRed">0.00 TL</span>
+                    </div>
+                </div>
+
+                <button onclick="checkout()" class="w-full py-3.5 bg-festiveRed hover:bg-festiveRedHover text-white font-bold rounded-xl shadow-md transition-all text-sm tracking-wide flex items-center justify-center space-x-2">
+                    <span>Siparişi Tamamla</span>
+                    <i class="fa-solid fa-arrow-right text-xs"></i>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ÖZEL 3D SİPARİŞ / TALEP MODALI -->
+    <div id="customOrderModal" class="fixed inset-0 z-50 hidden flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm">
+        <div class="bg-white w-full max-w-lg rounded-3xl shadow-2xl overflow-hidden border border-pineGreen/10 max-h-[90vh] flex flex-col">
+            <!-- Modal Header -->
+            <div class="px-6 py-4 bg-pineGreen text-white flex items-center justify-between">
+                <div class="flex items-center space-x-2">
+                    <i class="fa-solid fa-wand-magic-sparkles text-goldAccent"></i>
+                    <h3 class="text-lg font-bold">Özel 3D Baskı & Tasarım Talebi</h3>
+                </div>
+                <button onclick="closeCustomOrderModal()" class="text-white/70 hover:text-white">
+                    <i class="fa-solid fa-xmark text-xl"></i>
+                </button>
+            </div>
+
+            <!-- Form -->
+            <form id="customOrderForm" onsubmit="handleCustomOrderSubmit(event)" class="p-6 overflow-y-auto space-y-4 custom-scrollbar">
+                <div>
+                    <label class="block text-xs font-bold text-pineGreen uppercase mb-1">Adınız Soyadınız *</label>
+                    <input type="text" id="custName" required placeholder="Örn: Ahmet Yılmaz" 
+                        class="w-full px-3.5 py-2.5 rounded-xl border border-pineGreen/20 text-sm focus:outline-none focus:border-pineGreen">
+                </div>
+
+                <div class="grid grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-xs font-bold text-pineGreen uppercase mb-1">E-Posta *</label>
+                        <input type="email" id="custEmail" required placeholder="ahmet@example.com" 
+                            class="w-full px-3.5 py-2.5 rounded-xl border border-pineGreen/20 text-sm focus:outline-none focus:border-pineGreen">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-bold text-pineGreen uppercase mb-1">Telefon *</label>
+                        <input type="tel" id="custPhone" required placeholder="0555 123 45 67" 
+                            class="w-full px-3.5 py-2.5 rounded-xl border border-pineGreen/20 text-sm focus:outline-none focus:border-pineGreen">
+                    </div>
+                </div>
+
+                <div>
+                    <label class="block text-xs font-bold text-pineGreen uppercase mb-1">İstenen Renk Tercihi</label>
+                    <select id="custColor" class="w-full px-3.5 py-2.5 rounded-xl border border-pineGreen/20 text-sm focus:outline-none focus:border-pineGreen bg-white">
+                        <option value="Noel Kırmızısı">Noel Kırmızısı</option>
+                        <option value="Orman Yeşili">Orman Yeşili</option>
+                        <option value="Altın Sarısı">Işıltılı Altın Sarısı</option>
+                        <option value="Mat Beyaz">Mat Kar Beyazı</option>
+                        <option value="Antrasit">Antrasit Siyah</option>
+                    </select>
+                </div>
+
+                <div>
+                    <label class="block text-xs font-bold text-pineGreen uppercase mb-1">Tasarım / Ölçü Detayları *</label>
+                    <textarea id="custDetails" rows="4" required placeholder="İstediğiniz model, kapı köşe ölçüsü veya özel fikirlerinizi açıklayın..." 
+                        class="w-full px-3.5 py-2.5 rounded-xl border border-pineGreen/20 text-sm focus:outline-none focus:border-pineGreen"></textarea>
+                </div>
+
+                <div class="pt-2">
+                    <button type="submit" class="w-full py-3.5 bg-pineGreen hover:bg-pineLight text-white font-bold rounded-xl shadow-md transition-all text-sm border border-goldAccent/30">
+                        3D Tasarım Talebini Gönder
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Toast Bildirim Kabı -->
+    <div id="toastContainer" class="fixed bottom-5 right-5 z-50 flex flex-col space-y-2 pointer-events-none"></div>
+
+    <script>
+        // 3D Noel ve Ev Süsleri Katalog Verileri
+        const initialProducts = [
+            {
+                id: 101,
+                title: "3D Yılbaşı Ağacı & Geyik Kapı Köşe Süsü",
+                category: "3D Noel Kapı Köşe Süsleri",
+                price: 195.00,
+                rating: 4.9,
+                reviewsCount: 42,
+                image: "https://images.unsplash.com/photo-1543589077-47d51606c1bf?auto=format&fit=crop&w=600&q=80",
+                description: "Kapı çerçevenizin sağ veya sol üst köşesine tam oturan 3D katmanlı geyik ve Noel ağacı figürlü köşe dekoru.",
+                isNew: true,
+                selectedColor: "Noel Kırmızısı",
+                colors: ["Noel Kırmızısı", "Orman Yeşili", "Mat Beyaz", "Altın Sarısı"]
+            },
+            {
+                id: 102,
+                title: "3D Nutcracker (Fındıkkıran) Kapı Köşe Dekoru",
+                category: "3D Noel Kapı Köşe Süsleri",
+                price: 220.00,
+                rating: 5.0,
+                reviewsCount: 28,
+                image: "https://images.unsplash.com/photo-1512389142860-9c449e58a543?auto=format&fit=crop&w=600&q=80",
+                description: "Klasik Fındıkkıran muhafızı silüetinde tasarlanmış, kapı köşelerine özel 3D filament süs.",
+                isNew: true,
+                selectedColor: "Orman Yeşili",
+                colors: ["Orman Yeşili", "Noel Kırmızısı", "Antrasit"]
+            },
+            {
+                id: 103,
+                title: "Modern Geometrik 3D Spiral Vazo",
+                category: "Ev Dekorasyon Süsleri",
+                price: 280.00,
+                rating: 4.8,
+                reviewsCount: 35,
+                image: "https://images.unsplash.com/photo-1612196808214-b7e239e5f6b7?auto=format&fit=crop&w=600&q=80",
+                description: "Kuru çiçekler ve masaüstü dekorasyonu için matematiksel dalga formlu özel 3D tasarım vazo.",
+                isNew: false,
+                selectedColor: "Mat Beyaz",
+                colors: ["Mat Beyaz", "Antrasit", "Altın Sarısı"]
+            },
+            {
+                id: 104,
+                title: "3D Işıklı Noel Evi Kapı Üstü Süsü",
+                category: "3D Noel Kapı Köşe Süsleri",
+                price: 245.00,
+                rating: 4.9,
+                reviewsCount: 19,
+                image: "https://images.unsplash.com/photo-1543258103-a62bdc069871?auto=format&fit=crop&w=600&q=80",
+                description: "Minik LED mumlar ile uyumlu, karlı çatı detaylı Noel kasabası kapı çerçeve dekorasyonu.",
+                isNew: true,
+                selectedColor: "Altın Sarısı",
+                colors: ["Altın Sarısı", "Mat Beyaz", "Noel Kırmızısı"]
+            },
+            {
+                id: 105,
+                title: "3D Düğüm Minimalist Masa Üstü Objesi (Knot)",
+                category: "Ev Dekorasyon Süsleri",
+                price: 175.00,
+                rating: 4.7,
+                reviewsCount: 24,
+                image: "https://images.unsplash.com/photo-1578749556568-bc2c40e68b61?auto=format&fit=crop&w=600&q=80",
+                description: "Modern ve iskandinav tarzı iç mekanlar için estetik dolambaçlı 3D geometrik obje.",
+                isNew: false,
+                selectedColor: "Antrasit",
+                colors: ["Antrasit", "Mat Beyaz", "Orman Yeşili"]
+            },
+            {
+                id: 106,
+                title: "3D Spiral Dalgalı Duvar & Konsol Süsü",
+                category: "Ev Dekorasyon Süsleri",
+                price: 210.00,
+                rating: 4.8,
+                reviewsCount: 16,
+                image: "https://images.unsplash.com/photo-1513519245088-0e12902e5a38?auto=format&fit=crop&w=600&q=80",
+                description: "Işık kırılmaları oluşturan katmanlı yapısı ile konsol ve kitaplıklar için 3D heykelcik.",
+                isNew: false,
+                selectedColor: "Mat Beyaz",
+                colors: ["Mat Beyaz", "Altın Sarısı", "Antrasit"]
+            }
+        ];
+
+        // Uygulama Durumu (State)
+        let products = JSON.parse(localStorage.getItem('printify_products')) || initialProducts;
+        let cart = JSON.parse(localStorage.getItem('printify_cart')) || [];
+        let favorites = JSON.parse(localStorage.getItem('printify_favs')) || [];
+        let currentCategory = 'all';
+        let currentSearchQuery = '';
+        let showingFavoritesOnly = false;
+
+        // Sayfa Yüklendiğinde
+        document.addEventListener('DOMContentLoaded', () => {
+            renderProducts();
+            updateCartUI();
+            updateFavUI();
+        });
+
+        // LocalStorage Kayıt
+        function saveState() {
+            localStorage.setItem('printify_products', JSON.stringify(products));
+            localStorage.setItem('printify_cart', JSON.stringify(cart));
+            localStorage.setItem('printify_favs', JSON.stringify(favorites));
+        }
+
+        // Ürünleri Listele
+        function renderProducts() {
+            const grid = document.getElementById('productGrid');
+            const noResults = document.getElementById('noResults');
+            grid.innerHTML = '';
+
+            let filtered = products.filter(p => {
+                let matchesCat = true;
+                if (currentCategory === 'Yeni Gelenler') {
+                    matchesCat = p.isNew === true;
+                } else if (currentCategory !== 'all') {
+                    matchesCat = (p.category === currentCategory);
+                }
+
+                const matchesSearch = p.title.toLowerCase().includes(currentSearchQuery.toLowerCase()) || 
+                                      p.category.toLowerCase().includes(currentSearchQuery.toLowerCase()) ||
+                                      p.description.toLowerCase().includes(currentSearchQuery.toLowerCase());
+                const matchesFav = showingFavoritesOnly ? favorites.includes(p.id) : true;
+
+                return matchesCat && matchesSearch && matchesFav;
+            });
+
+            if (filtered.length === 0) {
+                noResults.classList.remove('hidden');
+            } else {
+                noResults.classList.add('hidden');
+                filtered.forEach(p => {
+                    const isFav = favorites.includes(p.id);
+                    const card = document.createElement('div');
+                    card.className = "bg-white rounded-3xl overflow-hidden border border-pineGreen/10 shadow-sm hover:shadow-xl transition-all duration-300 flex flex-col justify-between group";
+
+                    // Renk opsiyonları butonları
+                    const colorOptionsHtml = p.colors ? p.colors.map(c => `
+                        <button onclick="changeProductColor(${p.id}, '${c}')" 
+                            class="px-2 py-1 text-[10px] font-semibold rounded-lg border transition-all ${p.selectedColor === c ? 'bg-pineGreen text-white border-pineGreen' : 'bg-warmBg text-gray-600 border-gray-200 hover:border-pineGreen'}">
+                            ${c}
+                        </button>
+                    `).join('') : '';
+
+                    card.innerHTML = `
+                        <div>
+                            <!-- Ürün Görseli -->
+                            <div class="relative aspect-square overflow-hidden bg-warmBg">
+                                <img src="${p.image}" alt="${p.title}" 
+                                    onerror="this.src='https://placehold.co/600x600/1A382B/D4AF37?text=PrintifyCraft3D'"
+                                    class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                                
+                                <!-- Kategori Etiketi -->
+                                <span class="absolute top-3 left-3 bg-pineGreen/90 backdrop-blur-md text-goldAccent text-[10px] font-bold px-3 py-1 rounded-full shadow-sm">
+                                    ${p.category}
+                                </span>
+
+                                ${p.isNew ? `
+                                    <span class="absolute top-3 left-28 bg-festiveRed text-white text-[10px] font-bold px-2.5 py-1 rounded-full shadow-sm">
+                                        YENİ
+                                    </span>
+                                ` : ''}
+
+                                <!-- Favori Butonu -->
+                                <button onclick="toggleFavorite(${p.id})" 
+                                    class="absolute top-3 right-3 w-9 h-9 rounded-full bg-white/90 backdrop-blur-md flex items-center justify-center text-gray-400 hover:text-festiveRed shadow-sm transition-colors">
+                                    <i class="${isFav ? 'fa-solid text-festiveRed' : 'fa-regular'} fa-heart text-base"></i>
+                                </button>
+                            </div>
+
+                            <!-- Ürün Bilgileri -->
+                            <div class="p-5 space-y-3">
+                                <div class="flex items-center justify-between text-xs">
+                                    <span class="text-[11px] font-bold text-pineGreen/70">✨ 3D PLA Filament</span>
+                                    <div class="flex items-center text-amber-500 font-bold">
+                                        <i class="fa-solid fa-star text-xs mr-1"></i>
+                                        <span>${p.rating}</span>
+                                        <span class="text-gray-400 font-normal ml-0.5">(${p.reviewsCount})</span>
+                                    </div>
+                                </div>
+
+                                <h3 class="font-extrabold text-pineGreen text-base leading-snug group-hover:text-festiveRed transition-colors">
+                                    ${p.title}
+                                </h3>
+
+                                <p class="text-xs text-gray-500 line-clamp-2 leading-relaxed">
+                                    ${p.description}
+                                </p>
+
+                                <!-- Renk Seçenekleri -->
+                                <div class="space-y-1 pt-1">
+                                    <span class="text-[10px] font-bold text-gray-400 uppercase block">Seçili Renk: <strong class="text-pineGreen">${p.selectedColor}</strong></span>
+                                    <div class="flex flex-wrap gap-1">
+                                        ${colorOptionsHtml}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Fiyat ve Sepete Ekle -->
+                        <div class="px-5 pb-5 pt-3 flex items-center justify-between border-t border-gray-100 mt-2">
+                            <div>
+                                <span class="text-[10px] text-gray-400 uppercase block font-semibold">Fiyat</span>
+                                <span class="text-lg font-extrabold text-pineGreen">${p.price.toFixed(2)} TL</span>
+                            </div>
+
+                            <button onclick="addToCart(${p.id})" 
+                                class="bg-festiveRed hover:bg-festiveRedHover text-white font-bold px-4 py-2.5 rounded-2xl transition-all flex items-center space-x-1.5 text-xs shadow-sm active:scale-95">
+                                <i class="fa-solid fa-plus text-xs"></i>
+                                <span>Sepete Ekle</span>
+                            </button>
+                        </div>
+                    `;
+                    grid.appendChild(card);
+                });
+            }
+        }
+
+        // Renk Seçimini Değiştirme
+        function changeProductColor(productId, color) {
+            const p = products.find(prod => prod.id === productId);
+            if (p) {
+                p.selectedColor = color;
+                saveState();
+                renderProducts();
+            }
+        }
+
+        // Kategori Değiştirme
+        function filterCategory(cat) {
+            currentCategory = cat;
+            showingFavoritesOnly = false;
+            
+            const buttons = document.querySelectorAll('.cat-btn');
+            buttons.forEach(btn => {
+                if((cat === 'all' && btn.innerText.trim() === 'Tümü') || btn.innerText.includes(cat)) {
+                    btn.className = "cat-btn active px-4 py-2 rounded-full text-xs sm:text-sm font-semibold whitespace-nowrap transition-all border border-pineGreen bg-pineGreen text-white shadow-sm";
+                } else {
+                    btn.className = "cat-btn px-4 py-2 rounded-full text-xs sm:text-sm font-semibold whitespace-nowrap transition-all border border-pineGreen/20 bg-white text-pineGreen hover:bg-pineGreen/5";
+                }
+            });
+
+            renderProducts();
+        }
+
+        // Arama İşlemleri
+        function handleSearch() {
+            currentSearchQuery = document.getElementById('searchInput').value;
+            renderProducts();
+        }
+
+        function handleSearchMobile() {
+            currentSearchQuery = document.getElementById('searchInputMobile').value;
+            renderProducts();
+        }
+
+        // Favoriler
+        function filterFavorites() {
+            showingFavoritesOnly = !showingFavoritesOnly;
+            if(showingFavoritesOnly) {
+                showToast("Favori ürünleriniz listeleniyor ❤️", "info");
+            }
+            renderProducts();
+        }
+
+        function resetFilters() {
+            currentCategory = 'all';
+            currentSearchQuery = '';
+            showingFavoritesOnly = false;
+            document.getElementById('searchInput').value = '';
+            document.getElementById('searchInputMobile').value = '';
+            filterCategory('all');
+        }
+
+        function toggleFavorite(productId) {
+            const index = favorites.indexOf(productId);
+            if (index > -1) {
+                favorites.splice(index, 1);
+                showToast("Favorilerden çıkarıldı.", "info");
+            } else {
+                favorites.push(productId);
+                showToast("Favorilere eklendi ❤️", "success");
+            }
+            saveState();
+            updateFavUI();
+            renderProducts();
+        }
+
+        function updateFavUI() {
+            const favBadge = document.getElementById('favCount');
+            if (favorites.length > 0) {
+                favBadge.innerText = favorites.length;
+                favBadge.classList.remove('hidden');
+            } else {
+                favBadge.classList.add('hidden');
+            }
+        }
+
+        // Sepete Ekleme
+        function addToCart(productId) {
+            const product = products.find(p => p.id === productId);
+            if (!product) return;
+
+            const cartItem = cart.find(item => item.id === productId && item.selectedColor === product.selectedColor);
+            if (cartItem) {
+                cartItem.quantity += 1;
+            } else {
+                cart.push({
+                    id: product.id,
+                    title: product.title,
+                    price: product.price,
+                    image: product.image,
+                    category: product.category,
+                    selectedColor: product.selectedColor,
+                    quantity: 1
+                });
+            }
+
+            saveState();
+            updateCartUI();
+            showToast(`${product.title} (${product.selectedColor}) sepete eklendi! 🎄`, "success");
+        }
+
+        function updateQuantity(index, delta) {
+            if (cart[index]) {
+                cart[index].quantity += delta;
+                if (cart[index].quantity <= 0) {
+                    cart.splice(index, 1);
+                }
+                saveState();
+                updateCartUI();
+            }
+        }
+
+        function removeFromCart(index) {
+            cart.splice(index, 1);
+            saveState();
+            updateCartUI();
+            showToast("Ürün sepetten çıkarıldı.", "info");
+        }
+
+        function updateCartUI() {
+            const cartList = document.getElementById('cartItemsList');
+            const cartCountBadge = document.getElementById('cartCount');
+            const subtotalEl = document.getElementById('cartSubtotal');
+            const shippingEl = document.getElementById('cartShipping');
+            const totalEl = document.getElementById('cartTotal');
+
+            const totalCount = cart.reduce((acc, item) => acc + item.quantity, 0);
+            cartCountBadge.innerText = totalCount;
+
+            cartList.innerHTML = '';
+
+            if (cart.length === 0) {
+                cartList.innerHTML = `
+                    <div class="text-center py-12 text-gray-400">
+                        <i class="fa-solid fa-cube text-5xl mb-3 text-pineGreen/20"></i>
+                        <p class="text-sm font-bold text-pineGreen">Sepetiniz Boş</p>
+                        <p class="text-xs text-gray-400 mt-1">3D kapı süsleri ve ev dekorasyonlarını keşfedin!</p>
+                    </div>
+                `;
+                subtotalEl.innerText = "0.00 TL";
+                shippingEl.innerText = "0.00 TL";
+                totalEl.innerText = "0.00 TL";
+                updateShippingProgressBar(0);
+                return;
+            }
+
+            let subtotal = 0;
+
+            cart.forEach((item, index) => {
+                const itemTotal = item.price * item.quantity;
+                subtotal += itemTotal;
+
+                const row = document.createElement('div');
+                row.className = "flex items-center space-x-3 bg-white p-3 rounded-2xl border border-pineGreen/10 shadow-xs";
+                row.innerHTML = `
+                    <img src="${item.image}" alt="${item.title}" class="w-16 h-16 object-cover rounded-xl bg-warmBg">
+                    <div class="flex-1 min-w-0">
+                        <h4 class="text-xs font-bold text-pineGreen truncate">${item.title}</h4>
+                        <span class="text-[10px] text-festiveRed font-bold block">Renk: ${item.selectedColor}</span>
+                        <span class="text-xs font-extrabold text-pineGreen">${item.price.toFixed(2)} TL</span>
+                    </div>
+
+                    <div class="flex items-center space-x-1.5 bg-warmBg p-1 rounded-xl border border-pineGreen/10">
+                        <button onclick="updateQuantity(${index}, -1)" class="w-6 h-6 rounded-lg bg-white text-pineGreen text-xs flex items-center justify-center font-bold hover:bg-pineGreen/10">-</button>
+                        <span class="text-xs font-bold w-4 text-center text-pineGreen">${item.quantity}</span>
+                        <button onclick="updateQuantity(${index}, 1)" class="w-6 h-6 rounded-lg bg-white text-pineGreen text-xs flex items-center justify-center font-bold hover:bg-pineGreen/10">+</button>
+                    </div>
+
+                    <button onclick="removeFromCart(${index})" class="text-gray-300 hover:text-festiveRed p-1">
+                        <i class="fa-solid fa-trash-can text-xs"></i>
+                    </button>
+                `;
+                cartList.appendChild(row);
+            });
+
+            const shippingCost = subtotal >= 250 || subtotal === 0 ? 0 : 35.00;
+            const grandTotal = subtotal + shippingCost;
+
+            subtotalEl.innerText = `${subtotal.toFixed(2)} TL`;
+            shippingEl.innerText = shippingCost === 0 ? "Ücretsiz" : `${shippingCost.toFixed(2)} TL`;
+            totalEl.innerText = `${grandTotal.toFixed(2)} TL`;
+
+            updateShippingProgressBar(subtotal);
+        }
+
+        // Kargo Bedava İlerleme Barı
+        function updateShippingProgressBar(subtotal) {
+            const target = 250;
+            const diff = target - subtotal;
+            const percentage = Math.min(100, (subtotal / target) * 100);
+
+            const bar = document.getElementById('shippingProgressBar');
+            const diffText = document.getElementById('shippingDiffText');
+
+            bar.style.width = `${percentage}%`;
+
+            if (diff <= 0) {
+                diffText.innerHTML = `<span class="text-pineGreen font-bold">🎉 Kargo Ücretsiz!</span>`;
+            } else {
+                diffText.innerText = `${diff.toFixed(2)} TL kaldı`;
+            }
+        }
+
+        // Sepet Modalı Aç/Kapat
+        function toggleCartModal(open) {
+            const modal = document.getElementById('cartModal');
+            const drawer = document.getElementById('cartDrawer');
+            const backdrop = document.getElementById('cartBackdrop');
+
+            if (open) {
+                modal.classList.remove('invisible');
+                setTimeout(() => {
+                    backdrop.classList.remove('opacity-0');
+                    drawer.classList.remove('translate-x-full');
+                }, 10);
+            } else {
+                backdrop.classList.add('opacity-0');
+                drawer.classList.add('translate-x-full');
+                setTimeout(() => {
+                    modal.classList.add('invisible');
+                }, 300);
+            }
+        }
+
+        // Özel Sipariş Modalı Aç/Kapat
+        function openCustomOrderModal() {
+            document.getElementById('customOrderModal').classList.remove('hidden');
+        }
+
+        function closeCustomOrderModal() {
+            document.getElementById('customOrderModal').classList.add('hidden');
+        }
+
+        // Özel Sipariş Form Gönderimi
+        function handleCustomOrderSubmit(e) {
+            e.preventDefault();
+            closeCustomOrderModal();
+            document.getElementById('customOrderForm').reset();
+            showToast("Özel 3D tasarım talebiniz alındı! En kısa sürede iletişime geçeceğiz ✨", "success");
+        }
+
+        // Ödeme Tamamlama
+        function checkout() {
+            if (cart.length === 0) {
+                showToast("Sepetiniz boş.", "info");
+                return;
+            }
+
+            showToast("3D Süs siparişiniz alındı! Teşekkür ederiz 🎁", "success");
+            cart = [];
+            saveState();
+            updateCartUI();
+            toggleCartModal(false);
+        }
+
+        // Toast Mesajı
+        function showToast(message, type = "success") {
+            const container = document.getElementById('toastContainer');
+            const toast = document.createElement('div');
+            
+            const bgColor = type === "success" ? "bg-pineGreen text-white" : "bg-festiveRed text-white";
+            const icon = type === "success" ? "fa-circle-check text-goldAccent" : "fa-circle-info";
+
+            toast.className = `flex items-center space-x-3 ${bgColor} px-4 py-3 rounded-2xl shadow-xl text-xs font-semibold tracking-wide border border-white/20 pointer-events-auto toast-enter`;
+            toast.innerHTML = `
+                <i class="fa-solid ${icon} text-base"></i>
+                <span>${message}</span>
+            `;
+
+            container.appendChild(toast);
+
+            setTimeout(() => {
+                toast.classList.add('toast-enter-active');
+            }, 10);
+
+            setTimeout(() => {
+                toast.style.opacity = '0';
+                toast.style.transform = 'translateY(100%)';
+                toast.style.transition = 'all 0.3s ease';
+                setTimeout(() => toast.remove(), 300);
+            }, 3000);
+        }
+    </script>
+</body>
+</html>
+```
